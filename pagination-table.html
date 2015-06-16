@@ -45,9 +45,9 @@ Items array is not available until after domReady method so it can't be attached
                 */
                 items: {
                     type: Array,
-                    value: [],
-                    observer: '_itemObserver'
-                },/**
+                    value: []
+                },
+                /**
                 * The amount of items to be displayed on a page
                 */
                 pageSize: {
@@ -105,8 +105,6 @@ Items array is not available until after domReady method so it can't be attached
                 this._setupPageNumbers();
             },
             /**
-            * Display the 
-            /**
             * Display the &lt;select&gt; to allow for quick selection of the pages 
             * to allow for quick selection of the pages 
             */
@@ -137,7 +135,6 @@ Items array is not available until after domReady method so it can't be attached
             _clearNodes: function(element){
                 while (Polymer.dom(element).firstChild) {
                     Polymer.dom(element).removeChild(Polymer.dom(element).firstChild);
-                    Polymer.dom.flush()
                 }
             },
             /**
@@ -146,9 +143,6 @@ Items array is not available until after domReady method so it can't be attached
             _computePageCount: function(itemsLength, pageSize){
                 return Math.ceil(itemsLength / pageSize);
             },
-            _itemObserver: function(items){
-                this.displayItems();
-            }
         });
     </script>
 </dom-module>
@@ -189,7 +183,7 @@ Default item that displays the keys of a JSON Object
                 return this.data[key];
             },
             /**
-            *  Gte the keys of the data
+            *  Get the keys of the data
             */
             _objectKeys: function(object){
                 return Object.keys(object);
