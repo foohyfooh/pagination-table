@@ -6628,20 +6628,6 @@ ChildRunner.get = function(target, traversal) {
 };
 
 /**
- * Hangs a reference to the ChildRunner's iframe-local wct object
- *
- * TODO(thedeeno): This method is odd to document so the achitecture might need
- * a little rework here. Maybe another named concept? Seeing WCT everywhere is
- * pretty confusing. Also, I don't think we need the parentScope.WCT; to limit
- * confusion I didn't include it.
- *
- * @param {object} wct The ChildRunner's iframe-local wct object
- */
-ChildRunner.prototype.prepare = function(wct) {
-  this.share = wct.share;
-};
-
-/**
  * Loads and runs the subsuite.
  *
  * @param {function} done Node-style callback.
@@ -6683,6 +6669,12 @@ ChildRunner.prototype.run = function(done) {
  */
 ChildRunner.prototype.loaded = function(error) {
   WCT.util.debug('ChildRunner#loaded', this.url, error);
+
+  // Not all targets have WCT loaded (compatiblity mode)
+  if (this.iframe.contentWindow.WCT) {
+    this.share = this.iframe.contentWindow.WCT.share;
+  }
+
   if (error) {
     this.signalRunComplete(error);
     this.done();
@@ -6713,7 +6705,12 @@ ChildRunner.prototype.done = function done() {
   this.signalRunComplete();
 
   if (!this.iframe) return;
-  this.iframe.parentNode.removeChild(this.iframe);
+  // Be safe and avoid potential browser crashes when logic attempts to interact
+  // with the removed iframe.
+  setTimeout(function() {
+    this.iframe.parentNode.removeChild(this.iframe);
+    this.iframe = null;
+  }.bind(this), 1);
 };
 
 ChildRunner.prototype.signalRunComplete = function signalRunComplete(error) {
@@ -6985,6 +6982,7 @@ window.testImmediateAsync = function testImmediateAsync(name, testFn) {
     });
   } catch (error) {
     err = error;
+    testComplete = true;
   }
 };
 

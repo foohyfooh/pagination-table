@@ -1,4 +1,4 @@
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
 
 <!--
 Element to allow pagination on a page when given an array of JSON object.
@@ -46,7 +46,6 @@ Items array is not available until after domReady method so it can't be attached
                 items: {
                     type: Array,
                     value: [],
-                    observer: '_itemObserver'
                 },/**
                 * The amount of items to be displayed on a page
                 */
@@ -145,9 +144,6 @@ Items array is not available until after domReady method so it can't be attached
             */
             _computePageCount: function(itemsLength, pageSize){
                 return Math.ceil(itemsLength / pageSize);
-            },
-            _itemObserver: function(items){
-                this.displayItems();
             }
         });
     </script>
