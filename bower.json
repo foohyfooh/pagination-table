@@ -1,16 +1,20 @@
 {
   "name": "pagination-table",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": [
-    "seed",
     "polymer",
     "web-components"
   ],
   "main": "pagination-table.html",
+  "ignore": [
+    "/.*",
+    "/demo/"
+  ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.3"
+    "polymer": "Polymer/polymer#^1.0.2"
   },
   "devDependencies": {
-    "web-component-tester": "Polymer/web-component-tester#^2.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "Polymer/web-component-tester#^3.1.7"
   }
 }
