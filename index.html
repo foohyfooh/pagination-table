@@ -4,51 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>pagination-table Demo</title>
-    <script src="./bower_components/webcomponentsjs/webcomponents.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<link rel="import" href="pagination-table.html">
+    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+	<link rel="import" href="../pagination-table.html">
+	<link rel="import" href="event-item.html">
   </head>
   <body unresolved>
     <p>An `pagination-table` looks like this:</p>
-    <pagination-table id="table" layout="event-item" pageSize="5"></pagination-table>
+    <pagination-table id="table" layout="pagination-item" page-size="5"></pagination-table>
   </body>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <script>
 	(function(){
-		$.get("output.php", function(response){
-			var table = document.getElementById("table");
-			table.items = JSON.parse(response).data;
-			table.displayItems();
-		});
+		var data = [{"name":"Web Components Talk","location":"Trinidad","date":"10th Febuary"}, {"name":"Polymer Talk","location":"Trinidad","date":"11th Febuary"},{"name":"X-Tags Talk","location":"Trinidad","date":"12th Febuary"},{"name": "NodeJS Talk","location":"Trinidad","date":"13th Febuary"}, {"name":"Web Components Talk","location":"Trinidad","date":"14th Febuary"},{"name":"Web Components Talk","location":"Trinidad","date":"15th Febuary"}, {"name":"Polymer Talk","location":"Trinidad","date":"16th Febuary"},{"name":"X-Tags Talk","location":"Trinidad","date":"17th Febuary"},{"name": "NodeJS Talk","location":"Trinidad","date":"18th Febuary"}, {"name":"Web Components Talk","location":"Trinidad","date":"19th Febuary"},{"name":"Web Components Talk","location":"Trinidad","date":"20th Febuary"}, {"name":"Polymer Talk","location":"Trinidad","date":"21st Febuary"},{"name":"X-Tags Talk","location":"Trinidad","date":"22nd Febuary"},{"name": "NodeJS Talk","location":"Trinidad","date":"23rd Febuary"}, {"name":"Web Components Talk","location":"Trinidad","date":"24th Febuary"},{"name":"Web Components Talk","location":"Trinidad","date":"25th Febuary"}, {"name":"Polymer Talk","location":"Trinidad","date":"26th Febuary"},{"name":"X-Tags Talk","location":"Trinidad","date":"27th Febuary"},{"name": "NodeJS Talk","location":"Trinidad","date":"28th Febuary"}, {"name":"Web Components Talk","location":"Trinidad","date":"1st March"}];
+	
+		var table = document.getElementById("table");
+		table.items = data;
+		table.displayItems();
 	})();
   </script>
-  
 </html>
-
-<polymer-element name="event-item" extends="pagination-item">
-    <template>
-        <style>
-            .event{
-                border: gray 1px solid;
-                min-width: 100px;
-                min-height: 100px;
-                width: 15%;
-                display: inline-block;
-                margin: 10px;
-                overflow: auto;
-            }
-        </style>
-        <div class='event'>
-            <h3>{{data.name}}</h3>
-            <p><b>Location:</b> {{data.location}}</p>
-            <p><b>Date:</b> {{data.date}}</p>
-        </div>
-    </template>
-    <script>
-        Polymer('event-item', {
-            ready: function() {
-                
-            }
-        })
-    </script>
-</polymer-element>

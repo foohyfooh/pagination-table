@@ -8,7 +8,8 @@
   ],
   "main": "pagination-table.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.3"
+    "polymer": "Polymer/polymer#^1.0.2",
+    "webcomponentsjs": "~0.7.3"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^2.0.0"

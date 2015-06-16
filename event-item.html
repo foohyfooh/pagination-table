@@ -1,0 +1,22 @@
+<dom-module id="event-item" extends="pagination-item">
+    <template>
+        <style>
+            .event{
+                border: gray 1px solid;
+                min-width: 100px;
+                min-height: 100px;
+                width: 15%;
+                display: inline-block;
+                margin: 10px;
+            }
+        </style>
+        <div class='event'>
+            <h3>{{data.name}}</h3>
+            <p><b>Location:</b> <span>{{data.location}}</span></p>
+            <p><b>Date:</b> <span>{{data.date}}</span></p>
+        </div>
+    </template>
+    <script>
+        Polymer({is: 'event-item'})
+    </script>
+</dom-module>

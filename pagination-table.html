@@ -1,7 +1,7 @@
-<link rel="import" href="./bower_components/polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
 
 <!--
-Element to allow pagination on a page when given an array of json object.
+Element to allow pagination on a page when given an array of JSON object.
 
 ##### Example
 
@@ -12,97 +12,188 @@ In script: document.getElementById("table").displayItems();
 Items array is not available until after domReady method so it can't be attached to an life cycle events.
 
 
-
 @element pagination-table
-@blurb Allow pagination on a page when given a json object.
+@blurb Allow pagination on a page when given array of JSON objects.
 @homepage https://github.com/foohyfooh/pagination-table
 @author Jonathan <foohyfooh>
+@demo
 -->
-<polymer-element name="pagination-table" attributes="items, pageSize, layout">
+<dom-module id="pagination-table">
 
     <template>
 		<link rel="stylesheet" href="pagination-table.css">
         <div id="container"></div>
-        <button on-click="{{previousPage}}">Previous</button>
-        <span> Page: <select id="pageSelector" on-change="{{selectedPageChange}}"></select> of {{roundUp(items.length/pageSize)}}</span>
-        <button on-click="{{nextPage}}">Next</button>
-        <span>Item Count: {{items.length}}</span>
+        <button on-click="previousPage">Previous</button>
+        <span> Page: <select id="pageSelector" on-change="_selectedPageChange"></select> of <span>[[pageCount]]</span></span>
+        <button on-click="nextPage">Next</button>
+        <span>Item Count: <span>[[items.length]]</span></span>
     </template>
     <script>
-        Polymer('pagination-table', {
-            items: [],
-            page: 0,
-            pageSize: 10,
-			layout: 'pagination-item',
-            previousPage: function(event, detail, target){
+        Polymer({
+            is: 'pagination-table',
+            properties: {
+                /**
+                * The current page of the table
+                */
+                page: {
+                    type: Number,
+                    value: 0,
+                    reflectToAttribute: true
+                },
+                /**
+                * The items of the table
+                */
+                items: {
+                    type: Array,
+                    value: [],
+                    observer: '_itemObserver'
+                },/**
+                * The amount of items to be displayed on a page
+                */
+                pageSize: {
+                    type: Number,
+                    value: 10,
+                    reflectToAttribute: true
+                },
+                /**
+                * The layout to use for the items within the table
+                */
+                layout: {
+                    type: String,
+                    value: 'pagination-item',
+                    reflectToAttribute: true
+                },
+                /**
+                * The number of pages
+                */
+                pageCount:{
+                    type: Number,
+                    computed: '_computePageCount(items.length, pageSize)'
+                }
+            },
+            /**
+            * Go to the previous page, if any
+            */
+            previousPage: function(){
                 if(this.page > 0){
                     this.page--;
                     this.displayItems();
                 }
             },
-            nextPage: function(event, detail, target){
+            /**
+            * Go to the next page, if any
+            */
+            nextPage: function(){
                 if((this.items.length/this.pageSize) > (this.page+1)){
                     this.page++;
                     this.displayItems();
                 }
             },
+            /**
+            * Display the items
+            */
             displayItems: function(){
-                var container = this.shadowRoot.querySelector("#container");
-                this.clearNodes(container);
+                var container = Polymer.dom(this.root).querySelector("#container");
+                this._clearNodes(container);
                 var start = this.page * this.pageSize;
                 var end = start + this.pageSize;
                 for(var i = start; i < end && i < this.items.length; i++){
                     var node = document.createElement(this.layout);
                     node.data = this.items[i];
-                    container.appendChild(node);
+                    Polymer.dom(container).appendChild(node);
                 }
-                this.setupPageNumbers();
+                this._setupPageNumbers();
             },
-            setupPageNumbers: function(){
-                var select = this.shadowRoot.querySelector("#pageSelector");
-                this.clearNodes(select);
+            /**
+            * Display the 
+            /**
+            * Display the &lt;select&gt; to allow for quick selection of the pages 
+            * to allow for quick selection of the pages 
+            */
+            _setupPageNumbers: function(){
+                var select = Polymer.dom(this.root).querySelector("#pageSelector");
+                this._clearNodes(select);
                 var selected = this.page;
-                for(var i = 0; i < this.items.length/this.pageSize; i++){
+                for(var i = 0; i < this.pageCount; i++){
                     var option = document.createElement("option");
                     option.value = i;
                     option.innerHTML = i + 1;
                     if(i === selected){
                         option.selected = true;
                     }
-                    select.appendChild(option);
+                    Polymer.dom(select).appendChild(option);
                 }
             },
-            selectedPageChange: function(event, detail, target){
-                this.page = target.selectedIndex;
+            /**
+            * Handle when a user selects a new page for the &lt;select&gt;
+            */
+            _selectedPageChange: function(event){
+                this.page = event.target.selectedIndex;
                 this.displayItems();
             },
-            clearNodes: function(element){
-                while (element.firstChild) {
-                    element.removeChild(element.firstChild);
+            /**
+            * Remove all of the items from the table
+            */
+            _clearNodes: function(element){
+                while (Polymer.dom(element).firstChild) {
+                    Polymer.dom(element).removeChild(Polymer.dom(element).firstChild);
+                    Polymer.dom.flush()
                 }
             },
-            roundUp: function(number){
-                return Math.ceil(number);
+            /**
+            * Calculate the number of pages
+            */
+            _computePageCount: function(itemsLength, pageSize){
+                return Math.ceil(itemsLength / pageSize);
+            },
+            _itemObserver: function(items){
+                this.displayItems();
             }
         });
     </script>
-</polymer-element>
+</dom-module>
+
+<!--
+Default item that displays the keys of a JSON Object
 
 
-<polymer-element name="pagination-item" attributes="data">
+@element pagination-item
+@blurb Allow pagination on a page when given a json object.
+@homepage https://github.com/foohyfooh/pagination-table
+@author Jonathan <foohyfooh>
+-->
+<dom-module id="pagination-item">
     <template>
         <div>
-            <template repeat="{{key in objectKeys(data)}}">
-                <b>{{key}}:</b> {{data[key]}}
+            <template is="dom-repeat" items="{{_objectKeys(data)}}">
+                <b><span>[[item]]</span>:</b> <span>[[_getValue(item)]]</span>
             </template> 
         </div>
     </template>
     <script>
-        Polymer('pagination-item', {
-            data: [],
-            objectKeys: function(object){
+        Polymer({
+            is: 'pagination-item',
+            properties:{
+                /**
+                *  Data of the item
+                */
+                data: {
+                    type: Object,
+                    value: {}
+                }
+            },
+            /**
+            *  Get value based on key
+            */
+            _getValue: function(key){
+                return this.data[key];
+            },
+            /**
+            *  Gte the keys of the data
+            */
+            _objectKeys: function(object){
                 return Object.keys(object);
             }
         })
     </script>
-</polymer-element>
+</dom-module>
