@@ -36,12 +36,12 @@ Or [download as ZIP](https://github.com/foohyfooh/pagination-table/archive/maste
     <pagination-table items="{{items}}"></pagination-table>
     ```
 
-## Options
+## Attributes
 
-Attribute       | Options     | Default            | Description
+Attribute       | Type        | Default            | Description
 ---             | ---         | ---                | ---
 `items`         | *Array*     | `undefined`        | Items for component. JSON Objects.
-`pageSize`      | *Number*    | `10`               | Number of items to display on page.
+`page-size`     | *Number*    | `10`               | Number of items to display on page.
 `layout`        | *String*    | `pagination-item`  | The tag to use to represent the items.
 
 
