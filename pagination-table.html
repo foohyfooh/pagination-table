@@ -41,8 +41,7 @@ Element to allow pagination on a page when given an array of JSON object.
                 */
                 items: {
                     type: Array,
-                    value: [],
-                    observer: '_handleItemsChanged'
+                    value: []
                 },
                 /**
                 * The amount of items to be displayed on a page
@@ -68,6 +67,9 @@ Element to allow pagination on a page when given an array of JSON object.
                     computed: '_computePageCount(items.length, pageSize)'
                 }
             },
+            observers: [
+                '_handleItemsChanged(items.*)'
+            ],
             /**
             * Go to the previous page, if any
             */
@@ -141,8 +143,8 @@ Element to allow pagination on a page when given an array of JSON object.
             /*
             * Handle the loading items when the items are changed
             */
-            _handleItemsChanged: function(items){
-                this.page = 0; //Reset the page
+            _handleItemsChanged: function(changeRecord){
+                this.page = this.page > this.pageCount ? 0 : this.page; //Reset the page if the number of pages is less than the current page; otherwise stay on page
                 this._displayItems();
             }
             
