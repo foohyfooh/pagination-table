@@ -5,11 +5,7 @@ Element to allow pagination on a page when given an array of JSON object.
 
 ##### Example
 
-In HTML:  &lt;pagination-table id="table" items="{{data}}" layout="pagination-item" pageSize="3"&gt; &lt;/pagination-table&gt;
-
-In script: document.getElementById("table").displayItems();
-
-Items array is not available until after domReady method so it can't be attached to an life cycle events.
+&lt;pagination-table id="table" items="{{data}}" layout="pagination-item" pageSize="3"&gt; &lt;/pagination-table&gt;
 
 
 @element pagination-table
@@ -45,7 +41,8 @@ Items array is not available until after domReady method so it can't be attached
                 */
                 items: {
                     type: Array,
-                    value: []
+                    value: [],
+                    observer: '_handleItemsChanged'
                 },
                 /**
                 * The amount of items to be displayed on a page
@@ -77,30 +74,29 @@ Items array is not available until after domReady method so it can't be attached
             previousPage: function(){
                 if(this.page > 0){
                     this.page--;
-                    this.displayItems();
+                    this._displayItems();
                 }
             },
             /**
             * Go to the next page, if any
             */
             nextPage: function(){
-                if((this.items.length/this.pageSize) > (this.page+1)){
+                if(this.pageCount > (this.page + 1)){
                     this.page++;
-                    this.displayItems();
+                    this._displayItems();
                 }
             },
             /**
             * Display the items
             */
-            displayItems: function(){
-                var container = Polymer.dom(this.root).querySelector("#container");
-                this._clearNodes(container);
+            _displayItems: function(){
+                this._clearNodes(this.$.container);
                 var start = this.page * this.pageSize;
                 var end = start + this.pageSize;
                 for(var i = start; i < end && i < this.items.length; i++){
                     var node = document.createElement(this.layout);
                     node.data = this.items[i];
-                    Polymer.dom(container).appendChild(node);
+                    this.$.container.appendChild(node);
                 }
                 this._setupPageNumbers();
             },
@@ -109,8 +105,7 @@ Items array is not available until after domReady method so it can't be attached
             * to allow for quick selection of the pages 
             */
             _setupPageNumbers: function(){
-                var select = Polymer.dom(this.root).querySelector("#pageSelector");
-                this._clearNodes(select);
+                this._clearNodes(this.$.pageSelector);
                 var selected = this.page;
                 for(var i = 0; i < this.pageCount; i++){
                     var option = document.createElement("option");
@@ -119,7 +114,7 @@ Items array is not available until after domReady method so it can't be attached
                     if(i === selected){
                         option.selected = true;
                     }
-                    Polymer.dom(select).appendChild(option);
+                    this.$.pageSelector.appendChild(option);
                 }
             },
             /**
@@ -127,14 +122,14 @@ Items array is not available until after domReady method so it can't be attached
             */
             _selectedPageChange: function(event){
                 this.page = event.target.selectedIndex;
-                this.displayItems();
+                this._displayItems();
             },
             /**
-            * Remove all of the items from the table
+            * Remove all of the items from the element
             */
             _clearNodes: function(element){
-                while (Polymer.dom(element).firstChild) {
-                    Polymer.dom(element).removeChild(Polymer.dom(element).firstChild);
+                while (element.firstChild) {
+                    element.removeChild(element.firstChild);
                 }
             },
             /**
@@ -143,6 +138,14 @@ Items array is not available until after domReady method so it can't be attached
             _computePageCount: function(itemsLength, pageSize){
                 return Math.ceil(itemsLength / pageSize);
             },
+            /*
+            * Handle the loading items when the items are changed
+            */
+            _handleItemsChanged: function(items){
+                this.page = 0; //Reset the page
+                this._displayItems();
+            }
+            
         });
     </script>
 </dom-module>

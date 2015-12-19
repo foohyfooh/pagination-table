@@ -49,7 +49,6 @@ Attribute       | Type        | Default            | Description
 
 Method             | Parameters   | Returns     | Description
 ---                | ---          | ---         | ---
-`displayItems()`   | None.        | Nothing.    | Displays the items on the page.
 `previousPage()`   | None.        | Nothing.    | Displays the previous page.
 `nextPage()`       | None.        | Nothing.    | Displays the next page.
 
